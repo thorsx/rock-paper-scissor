@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissor</title>
+    <script src="https://kit.fontawesome.com/46915d35bf.js" crossorigin="anonymous"></script>
+    <link href='https://fonts.googleapis.com/css?family=Delius Unicase' rel='stylesheet'>
+
+    <style>
+        html {
+            background-color: lightyellow;
+        }
+
+        body {
+            background-color: white;
+            padding: 5px;
+            width: 1000px;
+            margin: 25px auto;
+            font-family: 'Delius Unicase';
+            font-size:25px;
+            border: 5px solid black;
+            text-align: center;
+            border-radius: 25px;
+            box-shadow: 10px 20px rgb(8, 8, 8);
+        }
+
+        h1 {
+            font-size: 60px;
+            margin-bottom: 0px;
+        }
+
+        #scoresContainer {
+            margin: auto;
+            border-top: 10px solid black;
+            border-bottom: 2px solid black;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding-top: 0px;
+            padding-bottom: 20px;
+        }
+
+        div > h3 {
+            margin-bottom: 0px;
+        }
+
+        #score1, #score2 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #score1 {
+            margin-right: 15px;
+        }
+
+        #score2 {
+            margin-left: 15px;
+        }
+
+        #humanScore, #computerScore {
+            background-color: cornsilk;
+            border: 5px solid black;
+            border-radius: 10px;
+            height: 80px;
+            width: 80px;
+            margin: 0px 50px 15px 50px;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 80px;
+            font-size: 35px;
+        }
+
+        .buttons {
+            display: inline-block;
+
+            margin-right: 15px;
+            padding: 15px;
+        }
+
+        .playerBtn:hover {
+            opacity: .5;
+            transform: scale(1.1);
+        }
+
+        i{
+            padding: 5px;
+        }
+
+        .computerChoice {
+            display: inline-block;
+
+            margin-left: 15px;
+            padding: 15px;
+
+        }
+
+        button {
+            border: 5px solid black;
+        }
+
+        #gameLog {
+            margin: auto;
+            border: 5px solid black;
+            width: 300px;
+            text-align: left;
+            padding: 15px;
+            white-space: pre-line;
+            clear: both;
+            font-size: 75%;
+            border-radius: 20px;
+            height: 200px;
+        }
+
+    </style>
+    
+</head>
+<body>
+    <h1>Tic-Tac-Toe</h1>
+
+    <div id='scoresContainer'>
+
+        <div id='score1'>
+            <h3>Your <br>Score</h3>
+            <div id="humanScore">-</div>  
+        </div> 
+
+        <div id='log'>
+            <h3>Game Log:</h3>
+            <div id='gameLog'></div>
+        </div>
+
+    <div id="score2">
+        <h3>Computer's <br>Score</h3>
+        <div id="computerScore">-</div>
+    </div> 
+</div>
+    
+
+    <div class="buttons">
+        <h3>Make your move!</h3>
+        <button><i class="far fa-hand-rock fa-8x playerBtn" id=0></i></button>
+        <button><i class="far fa-hand-paper fa-8x playerBtn" id=1></i></button>
+        <button><i class="far fa-hand-scissors fa-8x playerBtn" id=2></i></button>
+    </div>
+
+    <div class="computerChoice">
+        <h3>Computer's move!</h3>
+        <button id="computerBtn"><i class="fas fa-question fa-8x" id=99></i></button>
+    </div>
+     
+    <script>
+        function $ (x) {
+            return document.getElementById(x);
+        }
+        
+        function reset () {
+            playerScore = 0;
+            computerScore = 0;
+            gameLog = "";
+            roundCount = 1;
+        }
+
+        function replaceNode(id, nodeId, x=99){
+            let remove = $(x);
+            remove.remove();
+            let clone = $(id);
+            let newClone = clone.cloneNode(true);
+            newClone.id = 99;
+            newClone.classList.remove('playerBtn');
+            document.querySelector(nodeId).appendChild(newClone);
+        }
+
+        let newLine = "\r\n";
+        let gameLog = "";
+        let playerScore = 0;
+        let computerScore = 0;
+        let log = $('gameLog');
+        let p1 = $('humanScore');
+        let cscore = $('computerScore');
+        let roundCount = 1;
+        let hands = ['Rock', 'Paper', 'Scissors'];
+        
+        function playRound (playerSelect) {
+            let x = playerSelect;
+            let computerChoice = getComputerSelection();
+            replaceNode(computerChoice, '#computerBtn', 99);
+            
+            gameLog = "Round " + roundCount + newLine + "Player Selected: " + hands[playerSelect] + newLine + "Computer selected: " + hands[computerChoice] + newLine;
+            
+            if (x == computerChoice){
+                gameLog += "Draw!" + newLine + newLine;
+                log.textContent = gameLog;
+                roundCount++;
+            } 
+            if ((computerChoice==0 && x==2) || (computerChoice==1 && x==0) || (computerChoice==2 && x==1)) {
+                gameLog += "You lose!" + newLine + newLine;
+                log.textContent = gameLog;
+                computerScore++;
+                roundCount++;
+            }
+            if ((computerChoice==0 && x==1) || (computerChoice==1 && x==2) || (computerChoice==2 && x==0)) {
+                gameLog += "You win!" + newLine + newLine;
+                log.textContent = gameLog;
+                playerScore++;
+                roundCount++;
+            }
+            
+            log.textContent = gameLog + newLine;
+            p1.textContent = playerScore;
+            cscore.textContent = computerScore;         
+       
+            if (playerScore==5) {
+                gameLog += 'GAME OVER.. you WIN!' + newLine + "Make your move to play again!";
+                log.textContent = gameLog;
+                reset();
+
+            }
+            if (computerScore==5) {
+                gameLog += 'GAME OVER.. you LOSE!' + newLine + "Make your move to play again!";
+                log.textContent = gameLog;
+                reset();
+            }     
+            
+        }
+        
+        document.addEventListener('click', function (e) //gets id of each button click
+            {
+                console.log(e);
+                const isBtn = e.target.nodeName;
+                const idBtn = e.target.id;
+                if (isBtn != 'I' || idBtn==99){
+                    return;
+                }
+                const playerSelect = parseInt(e.target.id);
+                playRound(playerSelect);
+            });
+        
+
+        //gets a random number 0-2 for computer selection
+        function getComputerSelection(){
+            const x = Math.floor(Math.random() * 3);
+            return x;
+        }
+
+    </script>
+
+
+    
+</body>
+</html>
